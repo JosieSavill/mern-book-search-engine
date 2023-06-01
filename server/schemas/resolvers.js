@@ -1,9 +1,13 @@
-const {  bookSchema, User } = require('../models');
+const {  User } = require('../models');
+const bookSchema = require("../models/Book");
+
+// added const signtoken from mern 21:
+const { signToken } = require('../utils/auth');
 
 const resolvers = {
     Query: {
         book: async () => {
-            return bookSchema.find({});
+            return await bookSchema.find({});
         },
         users: async (parent, { _id }) => {
             const params = _id ? { _id } : {};
@@ -14,10 +18,42 @@ const resolvers = {
         createUser: async (parent, args) => {
             const user = await User.create(args);
             return user;
-        }
-    }
+            // added ref mern 21: reduce friction for user, immedately signs a JSON web token and logs user in after they are created:
+            const token = signToken(user);
+
+            // added token to return ref mern 21: returns and `Auth` object that consists of the signed token and user's information: 
+
+            return { token, user };
+        },
+        // added ref mern 21: 
+        login: async (parent, { email, password }) => {
+            // added ref mern 21: look up the user by the provided email address, since the email field is unique, we know that only one person will exist with that email:
+            const user = await User.findOne({ email });
+
+            // ref mern 21: if there is noo user with that email address, return an Autheiction error stating so:
+            if(!user) {
+                throw new AuthenticationError('No user found with this email address');
+            }
+
+            // ref mern 21: if there is  a user found, execute the `isCorrectPassword` instance method and check if the correct password was provided:
+            const correctPw = await user.isCorrectpassword(password);
+
+            // ref mer 21: if the password is incorrect, return an Authentication error stating so:
+            if(!correctPw) {
+                throw new AuthenticationError('Incorrect credentials');
+            }
+
+            // ref mern 21: if email and password are correct, sign user into the application with a JWT:
+            const token = signToken(user);
+
+            // ref mern 21: return an Auth object that consists of the signed token and user information:
+            return { token, user };
+        },
+    },
     
-}
+};
+
+module.exports = resolvers;
 
 
 // model code added below for reference:

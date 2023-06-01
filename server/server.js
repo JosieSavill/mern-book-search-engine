@@ -34,12 +34,9 @@ const startApolloServer = async () => {
   server.applyMiddleware({ app });
 
 
-// this app.use was here, is it needed:
+// this app.use was here, is it needed?
 app.use(routes);
 
-// db.once('open', () => {
-//   app.listen(PORT, () => console.log(`🌍 Now listening on localhost:${PORT}`));
-// });
 
 // this code added below is what is in mini project:
 db.once('open', () => {
