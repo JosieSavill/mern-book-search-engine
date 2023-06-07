@@ -23,7 +23,7 @@ if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../client/build')));
 }
 
-// added code below from mini project solved, may not need:
+// added code below from mini project solved:
 app.get('./', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/build.index.html'));
 });
@@ -49,5 +49,5 @@ db.once('open', () => {
 };
 
 
-// added:
+// added, calls the async function to start the server:
 startApolloServer();
