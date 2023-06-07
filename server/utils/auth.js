@@ -40,8 +40,4 @@ module.exports = {
 };
 
 
-module.exports = {
 
-  authMiddleware,
-  signToken
-};
