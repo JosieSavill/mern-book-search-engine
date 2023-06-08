@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/mern-book-search-engine', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useCreateIndex: true, // Replace with useCreateIndexes: true
-  useFindAndModify: false, // Replace with useFindAndModify: false
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true,
+//   useCreateIndex: true, // Replace with useCreateIndexes: true
+//   useFindAndModify: false, // Replace with useFindAndModify: false
 });
 
 const db = mongoose.connection;
