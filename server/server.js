@@ -15,6 +15,8 @@ const server = new ApolloServer({
   resolvers,
 });
 
+// app.use(routes);
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -24,14 +26,12 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // added code below from mini project solved:
-app.get('./', (req, res) => {
+app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/build.index.html'));
 });
 
-// added const startApolloServer from mini proj:
-const startApolloServer = async () => {
-  await server.start();
-  server.applyMiddleware({ app });
+// Apply Apollo Server as middleware:
+server.applyMiddleware({ app });
 
 
 // this app.use was here, is it needed?
@@ -43,10 +43,10 @@ db.once('open', () => {
   app.listen(PORT, () => {
     console.log(`API server running on port ${PORT}!`);
     console.log(`Use GraphQL at http://localhost:${PORT}${server.graphqlPath}`);
-  })
+  });
 
-})
-};
+});
+
 
 
 // added, calls the async function to start the server:

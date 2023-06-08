@@ -12,11 +12,11 @@ const LoginForm = () => {
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    setUserFormData({ ...userFormData, [name]: value });
+    setUserFormData((prevState) => ({ ...userFormData, [name]: value }));
   };
 
   const handleFormSubmit = async (event) => {
-    event.preventDefault();
+    
 
     // check if form has everything (as per react-bootstrap docs)
     const form = event.currentTarget;

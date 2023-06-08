@@ -10,5 +10,18 @@
         "bookId": "1234"
     
     }]
+    },
+
+    {
+      "username": "Josie Savill",
+      "email": "josie@techfrenz.com",
+      "password": "password02",
+      "savedBooks": [{
+
+        "description": "great novel",
+        "title": "great setting",
+        "bookId": "1235"
+    
+    }]
     }
 ]
