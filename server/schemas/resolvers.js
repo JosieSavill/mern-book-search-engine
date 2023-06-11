@@ -56,9 +56,29 @@ const resolvers = {
         throw new AuthenticationError('Not authenticated');
       }
     },
-    removeBook: async (parent, args, context) => {
-      // Add your implementation to remove a book from a user here
+    removeBook: async (parent, {bookId} , context) => {
+      if (context.user) {
+        try {
+          const user = await User.findById(context.user._id);
+          const bookIndex = user.savedBooks.findIndex((book)=> book.bookId === bookId);
+
+          if (bookIndex === -1) {
+            throw new Error('Book not found in user\'s saved books');
+          }
+
+          user.savedBooks.splice(bookIndex, 1);
+
+          await user.save();
+
+          return user;
+        } catch (err) {
+          throw new Error('Failed to remove book');
+        }
+      } else {
+        throw new AuthenticationError('Not authenticated');
+      }
     },
+
     login: async (parent, { email, password }, { req }) => {
       try {
         const user = await User.findOne({ email });

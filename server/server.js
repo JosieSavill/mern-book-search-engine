@@ -1,10 +1,10 @@
-// require('dotenv').config()
+require('dotenv').config()
 const express = require('express');
 const path = require('path');
 const db = require('./config/connection');
-const routes = require('./routes');
+
 const { ApolloServer } = require('apollo-server-express');
-// added 6/9
+const userRoutes = require('./userRoutes');
 const { authMiddleware } = require('./utils/auth');
 
 const { typeDefs, resolvers } = require('./schemas');
@@ -19,7 +19,8 @@ const server = new ApolloServer({
   context: authMiddleware,
 });
 
-app.use(routes);
+
+app.use('/api/users', userRoutes);
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
