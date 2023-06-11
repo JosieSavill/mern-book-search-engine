@@ -20,7 +20,7 @@ const server = new ApolloServer({
 });
 
 
-app.use('/api/users', user-routes);
+app.use('/api/user-routes');
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
