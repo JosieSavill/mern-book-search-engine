@@ -27,10 +27,7 @@
   "devDependencies": {
 
   },
-  "engines": {
-    "node": ">=9.7.1 <=14.x",
-    "npm": ">=6.0.0"
-  },
+  
   "directories": {
     "heroku": "server"
   }
