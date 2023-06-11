@@ -1,12 +1,9 @@
 const { User } = require('../models');
-const { AuthenticationError } = require('apollo-server-express');
-
-// added const signtoken from mern 21:
+const { AuthenticationError, UserInputError } = require('apollo-server-express');
 const { signToken } = require('../utils/auth');
 
 const resolvers = {
   Query: {
-    // Add your query resolvers here
     users: async () => {
       return User.find();
     },
@@ -14,38 +11,77 @@ const resolvers = {
       return User.findOne({ username });
     },
     currentUser: async (parent, args, context) => {
-      // Add your implementation to retrieve the current user here
+      if (context.user) {
+        return User.findById(context.user._id);
+      }
+      throw new AuthenticationError('Not authenticated');
     },
   },
   Mutation: {
-    // Add your mutation resolvers here
     createUser: async (parent, args) => {
-      const user = await User.create(args);
-      const token = signToken(user);
-      return { token, user };
+      try {
+        const user = await User.create(args);
+        const token = signToken(user);
+        return { token, user };
+      } catch (err) {
+        if (err.name === 'MongoError' && err.code === 11000) {
+          throw new UserInputError('Username or email already exists');
+        }
+        throw new Error('Failed to create user');
+      }
     },
     savedBook: async (parent, args, context) => {
-      // Add your implementation to save a book for a user here
+      if (context.user) {
+        try {
+          const { bookId, authors, description, image, link, title } = args;
+          const user = await User.findById(context.user._id);
+          const newBook = {
+            bookId,
+            authors,
+            description,
+            image,
+            link,
+            title
+          };
+
+          user.savedBooks.push(newBook);
+
+          await user.save();
+
+          return user;
+        } catch (err) {
+          throw new Error('Failed to save book');
+        }
+      } else {
+        throw new AuthenticationError('Not authenticated');
+      }
     },
     removeBook: async (parent, args, context) => {
       // Add your implementation to remove a book from a user here
     },
     login: async (parent, { email, password }, { req }) => {
-      const user = await User.findOne({ email });
+      try {
+        const user = await User.findOne({ email });
 
-      if (!user) {
-        throw new AuthenticationError('No user found with this email address');
+        if (!user) {
+          throw new AuthenticationError('No user found with this email address');
+        }
+
+        const correctPw = await user.isCorrectPassword(password);
+
+        if (!correctPw) {
+          throw new AuthenticationError('Incorrect credentials');
+        }
+
+        const token = signToken(user);
+
+        return { token, user };
+      } catch (err) {
+        if (err.name === 'MongoError' && err.code === 11000) {
+          throw new UserInputError('Username or email already exists');
+        }
+        throw new Error('Failed to sign up user');
       }
-
-      const correctPw = await user.isCorrectPassword(password);
-
-      if (!correctPw) {
-        throw new AuthenticationError('Incorrect credentials');
-      }
-
-      const token = signToken(user);
-
-      return { token, user };
     },
   },
 };

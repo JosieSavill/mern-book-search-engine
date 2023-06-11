@@ -100,3 +100,25 @@ export const LOGIN_USER = gql`
     }
   }
 `;
+
+export const SIGNUP_USER = gql`
+  mutation signupUser($username: String!, $email: String!, $password: String!) {
+    signupUser(username: $username, email: $email, password: $password) {
+      _id
+      username
+      email
+      savedBooks {
+        _id
+        name
+        authors
+        bookId
+        description
+        image
+        link
+        title
+      }
+      bookCount
+    }
+  }
+`;
+
