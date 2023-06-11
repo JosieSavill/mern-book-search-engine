@@ -5,6 +5,7 @@ const db = require('./config/connection');
 
 const { ApolloServer } = require('apollo-server-express');
 const userRoutes = require('./user-routes');
+
 const { authMiddleware } = require('./utils/auth');
 
 const { typeDefs, resolvers } = require('./schemas');
@@ -20,7 +21,8 @@ const server = new ApolloServer({
 });
 
 
-app.use('/api/user-routes');
+app.use('/api', userRoutes);
+
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
