@@ -1,16 +1,14 @@
 const mongoose = require('mongoose');
 
 
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/mern-book-search-engine'
- 
-);
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/book');
 
-const db = mongoose.connection;
+// const db = mongoose.connection;
 
-db.on('connected', () => {
-  console.log('Mongoose connected successfully');
-});
+// db.on('connected', () => {
+//   console.log('Mongoose connected successfully');
+// });
 
-// Rest of the code...
+// // Rest of the code...
 
-module.exports = db;
+module.exports = mongoose.connection;

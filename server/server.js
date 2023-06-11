@@ -1,4 +1,4 @@
-require('dotenv').config()
+// require('dotenv').config()
 const express = require('express');
 const path = require('path');
 const db = require('./config/connection');
@@ -19,16 +19,16 @@ const server = new ApolloServer({
   context: authMiddleware,
 });
 
-// app.use(routes);
+app.use(routes);
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.use(express.static(path.join(__dirname, '../client/build')));
+app.use('/', express.static(path.join(__dirname, '../client/build')));
 
 // if we're in production, serve client/build as static assets
 if (process.env.NODE_ENV === 'production') {
-  
+  app.use(express.static(path.join(__dirname, '../client/build')));
 }
 
 // added code below from mini project solved:
